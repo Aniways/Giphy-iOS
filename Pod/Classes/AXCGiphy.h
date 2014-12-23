@@ -12,6 +12,7 @@
 #import "AXCGiphyImageOriginal.h"
 /** public api key. you should get your own: https://github.com/giphy/GiphyAPI#access-and-api-keys */
 extern NSString * const kGiphyPublicAPIKey;
+
 /** Representation of Giphy's animated GIF and its metadata */
 @interface AXCGiphy : NSObject
 /** Giphy ID for this GIF */
@@ -49,6 +50,9 @@ extern NSString * const kGiphyPublicAPIKey;
 /** Set your Giphy API Key. You must set this before making any requests. You may use kGiphyPublicAPIKey for development
  https://github.com/giphy/GiphyAPI#access-and-api-keys */
 + (void) setGiphyAPIKey:(NSString *) APIkey;
++ (void) setGiphyRating:(NSString*) rating;
++ (void) setGiphyBaseURL:(NSString*) baseURL;
+
 /** Get your currently set Giphy API Key */
 + (NSString *) giphyAPIKey;
 /** NSURLRequest to search Giphy with term. You can limit results, with a max of 100. Returns 25 by default. Use offset with limit to paginate through results. */

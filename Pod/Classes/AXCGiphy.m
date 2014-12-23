@@ -7,13 +7,15 @@
 //
 //https://github.com/giphy/GiphyAPI
 #import "AXCGiphy.h"
-#import <AFNetworking/AFURLRequestSerialization.h>
+#import "AFURLRequestSerialization.h"
 #import "AXCGiphyImage.h"
 #import "AXCGiphyImageDownsampled.h"
 #import "AXCGiphyImageFixed.h"
 #import "AXCGiphyImageOriginal.h"
 
 NSString * const kGiphyPublicAPIKey = @"dc6zaTOxFJmzC";
+NSString * const kGiphyBasePathKey =  @"http://api.giphy.com/v1/gifs";
+NSString * const kGiphyRatingKey;
 
 @interface AXCGiphy ()
 @property (readwrite, strong, nonatomic) NSString * gifID;
@@ -38,6 +40,8 @@ NSString * const kGiphyPublicAPIKey = @"dc6zaTOxFJmzC";
 
 @implementation AXCGiphy
 static NSString * kGiphyAPIKey;
+static NSString * kGiphyBasePath;
+static NSString * kGiphyRating;
 
 - (instancetype) initWithDictionary: (NSDictionary *) dictionary
 {
@@ -79,6 +83,15 @@ static NSString * kGiphyAPIKey;
 {
     return kGiphyAPIKey;
 }
+
++ (void) setGiphyRating:(NSString*) rating{
+    kGiphyRating = rating;
+}
+
++ (void) setGiphyBaseURL:(NSString*) baseURL{
+    kGiphyBasePath = baseURL;
+}
+
 
 + (NSArray *) AXCGiphyArrayFromDictArray:(NSArray *) array
 {
@@ -122,12 +135,14 @@ static NSString * kGiphyAPIKey;
 
 + (NSURLRequest *) requestForEndPoint:(NSString *) endpoint params:(NSDictionary *) params
 {
-    NSString * base = @"http://api.giphy.com/v1/gifs";
-    NSString * withEndPoint = [NSString stringWithFormat:@"%@%@", base, endpoint];
+    NSString * withEndPoint = [NSString stringWithFormat:@"%@%@", kGiphyBasePathKey, endpoint];
     NSError * error;
     
     NSMutableDictionary * paramsWithAPIKey = [NSMutableDictionary dictionaryWithDictionary:params];
     [paramsWithAPIKey setObject:kGiphyAPIKey forKey:@"api_key"];
+    if(kGiphyRating){
+        [paramsWithAPIKey setObject:kGiphyRating forKey:@"rating"];
+    }
     NSURLRequest * request =  [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:withEndPoint parameters:paramsWithAPIKey error:&error];
     return request;
 }
