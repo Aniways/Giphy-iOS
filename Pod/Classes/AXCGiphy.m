@@ -157,23 +157,23 @@ static NSString * kGiphyRating;
     return request;
 }
 
-+ (NSURLSessionDataTask *) searchGiphyWithTerm:(NSString *) searchTerm limit:(NSUInteger) limit offset:(NSUInteger) offset completion:(void (^) (NSArray * results, NSError * error)) block
++ (NSURLSessionDataTask *) searchGiphyWithTerm:(NSString *) searchTerm limit:(NSUInteger) limit offset:(NSUInteger) offset completion:(void (^) (NSArray * results, NSInteger totalCount, NSError * error)) block
 {
     NSURLSession * session = [NSURLSession sharedSession];
     NSURLRequest * request = [self giphySearchRequestForTerm:searchTerm limit:limit offset:offset];
     NSURLSessionDataTask * task = [session dataTaskWithRequest:request  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         // network error
         if (error) {
-            block(nil, error);
+            block(nil, 0, error);
         } else {
             // json serialize error
             NSError * error;
             NSDictionary * results = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
             if (error) {
-                block(nil, error);
+                block(nil, 0, error);
             } else {
                 NSArray * gifArray = [AXCGiphy AXCGiphyArrayFromDictArray:results[@"data"]];
-                block(gifArray, nil);
+                block(gifArray, ((NSNumber *)(results[@"pagination"][@"total_count"])).integerValue, nil);
             }
         }
     }];

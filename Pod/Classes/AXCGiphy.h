@@ -76,7 +76,7 @@ extern NSString * const kGiphyPublicAPIKey;
 /** NSURLRequest to translate term into a GIF.*/
 + (NSURLRequest *) giphyTranslationRequestForTerm:(NSString *) term;
 /** Search Giphy with term. You can limit results, with a max of 100. Returns 25 by default. Use offset with limit to paginate through results. Asynchronously returns either array of AXCGiphy objects or an error. */
-+ (NSURLSessionDataTask *) searchGiphyWithTerm:(NSString *) searchTerm limit:(NSUInteger) limit offset:(NSUInteger) offset completion:(void (^) (NSArray * results, NSError * error)) block;
++ (NSURLSessionDataTask *) searchGiphyWithTerm:(NSString *) searchTerm limit:(NSUInteger) limit offset:(NSUInteger) offset completion:(void (^) (NSArray * results, NSInteger totalCount, NSError * error)) block;
 /** Get currently trending GIFs. You can limit results, with a max of 100. Returns 25 by default. Use offset with limit to paginate through results. Asynchronously returns either array of AXCGiphy objects or an error. */
 + (NSURLSessionDataTask *) trendingGIFsWithlimit:(NSUInteger) limit offset:(NSInteger) offset completion:(void (^) (NSArray * results, NSError * error)) block;
 /** Fetch GIF with ID . Asynchronously returns either AXCGiphy object or an error.*/
