@@ -28,6 +28,11 @@ NSString * const kGiphyRatingKey;
 @property (readwrite, strong, nonatomic) NSURL * source;
 @property (readwrite, strong, nonatomic) NSString * rating;
 @property (readwrite, strong, nonatomic) NSDate * trendingDateTime;
+
+@property (readwrite, strong, nonatomic) AXCGiphyImageFixed * fixedHeightSmallImage;
+@property (readwrite, strong, nonatomic) AXCGiphyImageDownsampled * fixedHeightSmallStillImage;
+@property (readwrite, strong, nonatomic) AXCGiphyImageFixed * fixedWidthSmallImage;
+@property (readwrite, strong, nonatomic) AXCGiphyImageDownsampled * fixedWidthSmallStillImage;
 @property (readwrite, strong, nonatomic) AXCGiphyImageFixed * fixedHeightImage;
 @property (readwrite, strong, nonatomic) AXCGiphyImageDownsampled * fixedHeightStillImage;
 @property (readwrite, strong, nonatomic) AXCGiphyImageDownsampled * fixedHeightDownsampledImage;
@@ -64,6 +69,11 @@ static NSString * kGiphyRating;
     self.trendingDateTime = [dateFormatter dateFromString:dictionary[@"trending_datetime"]];
     
     NSDictionary * images = dictionary[@"images"];
+    self.fixedHeightSmallImage = [[AXCGiphyImageFixed alloc] initWithDictionary:images[@"fixed_height_small"]];
+    self.fixedHeightSmallStillImage = [[AXCGiphyImageDownsampled alloc] initWithDictionary:images[@"fixed_height_small_still"]];
+    self.fixedWidthSmallImage = [[AXCGiphyImageFixed alloc] initWithDictionary:images[@"fixed_width_small"]];
+    self.fixedWidthStillImage = [[AXCGiphyImageDownsampled alloc] initWithDictionary:images[@"fixed_width_small_still"]];
+    
     self.fixedHeightImage = [[AXCGiphyImageFixed alloc] initWithDictionary:images[@"fixed_height"]];
     self.fixedHeightStillImage = [[AXCGiphyImageDownsampled alloc] initWithDictionary:images[@"fixed_height_still"]];
     self.fixedHeightDownsampledImage = [[AXCGiphyImageDownsampled alloc] initWithDictionary:images[@"fixed_height_downsampled"]];

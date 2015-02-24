@@ -29,6 +29,16 @@ extern NSString * const kGiphyPublicAPIKey;
 @property (readonly, strong, nonatomic) NSURL * source;
 @property (readonly, strong, nonatomic) NSString * rating;
 @property (readonly, strong, nonatomic) NSDate * trendingDateTime;
+
+/** Modified version of the GIF with fixed height of 100 */
+@property (readonly, strong, nonatomic) AXCGiphyImageFixed * fixedHeightSmallImage;
+/** Still image of the GIF with fixed height of 100 */
+@property (readonly, strong, nonatomic) AXCGiphyImageDownsampled * fixedHeightSmallStillImage;
+/** Modified version of the GIF with fixed width of 100 */
+@property (readonly, strong, nonatomic) AXCGiphyImageFixed * fixedWidthSmallImage;
+/** Still image of the GIF with fixed width of 100 */
+@property (readonly, strong, nonatomic) AXCGiphyImageDownsampled * fixedWidthSmallStillImage;
+
 /** Modified version of the GIF with fixed height of 200 */
 @property (readonly, strong, nonatomic) AXCGiphyImageFixed * fixedHeightImage;
 /** Still image of the GIF with fixed height of 200 */
