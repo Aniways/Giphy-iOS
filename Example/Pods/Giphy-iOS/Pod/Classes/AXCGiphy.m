@@ -7,15 +7,13 @@
 //
 //https://github.com/giphy/GiphyAPI
 #import "AXCGiphy.h"
-#import "AFURLRequestSerialization.h"
+#import <AFNetworking/AFURLRequestSerialization.h>
 #import "AXCGiphyImage.h"
 #import "AXCGiphyImageDownsampled.h"
 #import "AXCGiphyImageFixed.h"
 #import "AXCGiphyImageOriginal.h"
 
 NSString * const kGiphyPublicAPIKey = @"dc6zaTOxFJmzC";
-NSString * const kGiphyBasePathKey =  @"http://api.giphy.com/v1/gifs";
-NSString * const kGiphyRatingKey;
 
 @interface AXCGiphy ()
 @property (readwrite, strong, nonatomic) NSString * gifID;
@@ -40,8 +38,6 @@ NSString * const kGiphyRatingKey;
 
 @implementation AXCGiphy
 static NSString * kGiphyAPIKey;
-static NSString * kGiphyBasePath;
-static NSString * kGiphyRating;
 
 - (instancetype) initWithDictionary: (NSDictionary *) dictionary
 {
@@ -83,15 +79,6 @@ static NSString * kGiphyRating;
 {
     return kGiphyAPIKey;
 }
-
-+ (void) setGiphyRating:(NSString*) rating{
-    kGiphyRating = rating;
-}
-
-+ (void) setGiphyBaseURL:(NSString*) baseURL{
-    kGiphyBasePath = baseURL;
-}
-
 
 + (NSArray *) AXCGiphyArrayFromDictArray:(NSArray *) array
 {
@@ -135,36 +122,33 @@ static NSString * kGiphyRating;
 
 + (NSURLRequest *) requestForEndPoint:(NSString *) endpoint params:(NSDictionary *) params
 {
-    NSString * withEndPoint = [NSString stringWithFormat:@"%@%@", kGiphyBasePathKey, endpoint];
+    NSString * base = @"http://api.giphy.com/v1/gifs";
+    NSString * withEndPoint = [NSString stringWithFormat:@"%@%@", base, endpoint];
     NSError * error;
     
     NSMutableDictionary * paramsWithAPIKey = [NSMutableDictionary dictionaryWithDictionary:params];
     [paramsWithAPIKey setObject:kGiphyAPIKey forKey:@"api_key"];
-    if(kGiphyRating){
-        [paramsWithAPIKey setObject:kGiphyRating forKey:@"rating"];
-    }
     NSURLRequest * request =  [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:withEndPoint parameters:paramsWithAPIKey error:&error];
     return request;
 }
 
-+ (NSURLSessionDataTask *) searchGiphyWithTerm:(NSString *) searchTerm limit:(NSUInteger) limit offset:(NSUInteger) offset completion:(void (^) (NSArray * results, NSInteger totalCount, NSError * error)) block
++ (NSURLSessionDataTask *) searchGiphyWithTerm:(NSString *) searchTerm limit:(NSUInteger) limit offset:(NSUInteger) offset completion:(void (^) (NSArray * results, NSError * error)) block
 {
     NSURLSession * session = [NSURLSession sharedSession];
     NSURLRequest * request = [self giphySearchRequestForTerm:searchTerm limit:limit offset:offset];
     NSURLSessionDataTask * task = [session dataTaskWithRequest:request  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         // network error
         if (error) {
-            block(nil, 0, error);
+            block(nil, error);
         } else {
             // json serialize error
             NSError * error;
             NSDictionary * results = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-            error = error ?: [self customErrorFromResults:results];
             if (error) {
-                block(nil, 0, error);
+                block(nil, error);
             } else {
                 NSArray * gifArray = [AXCGiphy AXCGiphyArrayFromDictArray:results[@"data"]];
-                block(gifArray, ((NSNumber *)(results[@"pagination"][@"total_count"])).integerValue, nil);
+                block(gifArray, nil);
             }
         }
     }];
@@ -184,7 +168,6 @@ static NSString * kGiphyRating;
             // json serialize error
             NSError * error;
             NSDictionary * results = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-            error = error ?: [self customErrorFromResults:results];
             if (error) {
                 block(nil, error);
             } else {
@@ -209,7 +192,6 @@ static NSString * kGiphyRating;
             // json serialize error
             NSError * error;
             NSDictionary * results = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-            error = error ?: [self customErrorFromResults:results];
             if (error) {
                 block(nil, error);
             } else {
@@ -235,7 +217,6 @@ static NSString * kGiphyRating;
             // json serialize error
             NSError * error;
             NSDictionary * results = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-            error = error ?: [self customErrorFromResults:results];
             if (error) {
                 block(nil, error);
             } else {
@@ -260,7 +241,6 @@ static NSString * kGiphyRating;
             // json serialize error
             NSError * error;
             NSDictionary * results = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-            error = error ?: [self customErrorFromResults:results];
             if (error) {
                 block(nil, error);
             } else {
@@ -272,15 +252,4 @@ static NSString * kGiphyRating;
     [task resume];
     return task;
 }
-
-+ (NSError *)customErrorFromResults:(NSDictionary *)results
-{
-    NSArray * resultsData = results[@"data"];
-    if ([resultsData count] == 0) {
-        return [[NSError alloc] initWithDomain:@"com.giphy.ios" code:-1 userInfo:@{@"error_message" : @"No results were found"}];
-    }
-    return nil;
-}
-
-
 @end
