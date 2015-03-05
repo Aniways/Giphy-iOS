@@ -153,7 +153,9 @@ static NSString * kGiphyRating;
     if(kGiphyRating){
         [paramsWithAPIKey setObject:kGiphyRating forKey:@"rating"];
     }
-    NSURLRequest * request =  [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:withEndPoint parameters:paramsWithAPIKey error:&error];
+    NSMutableURLRequest * request =  [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:withEndPoint parameters:paramsWithAPIKey error:&error];
+    [request setTimeoutInterval:6];
+
     return request;
 }
 
