@@ -9,8 +9,6 @@
 #import "AXCGiphyImage.h"
 
 @interface AXCGiphyImageOriginal : AXCGiphyImage
-/** Size of this GIF */
-@property (readonly, nonatomic) NSUInteger size;
 /** Number of frames in this GIF */
 @property (readonly, nonatomic) NSUInteger frames;
 /** URL for mp4 of this GIF */
