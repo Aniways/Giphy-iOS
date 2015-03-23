@@ -11,6 +11,7 @@
 @property (strong, readwrite, nonatomic) NSURL * url;
 @property (readwrite, nonatomic) CGFloat width;
 @property (readwrite, nonatomic) CGFloat height;
+@property (readwrite, nonatomic) NSUInteger size;
 @end
 
 @implementation AXCGiphyImage
@@ -25,7 +26,9 @@
     self.url = [NSURL URLWithString:dictionary[@"url"]];
     self.width = [dictionary[@"width"] floatValue];
     self.height = [dictionary[@"height"] floatValue];
-    
+    if (dictionary[@"size"]){
+        self.size = [dictionary[@"size"] integerValue];
+    }
     return self;
 }
 
