@@ -14,7 +14,7 @@
 #import "AXCGiphyImageOriginal.h"
 
 NSString * const kGiphyPublicAPIKey = @"dc6zaTOxFJmzC";
-NSString * const kGiphyBasePathKey =  @"http://api.giphy.com/v1/gifs";
+NSString * const kGiphyBasePathKey =  @"https://api.giphy.com/v1/gifs";
 NSString * const kGiphyRatingKey;
 
 @interface AXCGiphy ()
